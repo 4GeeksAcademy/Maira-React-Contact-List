@@ -1,16 +1,105 @@
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import AddContact from "./AddContact.jsx";
+import EditContact from "./EditContact.jsx";
+import { useState, useEffect } from "react";
 
 export const Home = () => {
 
-  const {store, dispatch} =useGlobalReducer()
+	const { store, dispatch } = useGlobalReducer()
+
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		getContacts().then((response) => {
+			console.log(response)
+			dispatch({ type: 'LISTA_CONTACTOS', payload: response });
+		});
+	}, [])
+
+
+	function getContacts() {
+		return fetch(`https://playground.4geeks.com/contact/agendas/Marcel/contacts`,
+			{
+				method: "GET"
+			}
+		)
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				console.log("este es el log de getContact", data);
+				return data.contacts
+			})
+			.catch((err) => {
+				console.log(err);
+			})
+	};
+
+	function deleteContact(id) {
+
+		fetch(`https://playground.4geeks.com/contact/agendas/Marcel/contacts/${id}`, {
+			method: "DELETE",
+			headers: {
+				'content-Type': 'application/json'
+			}
+		})
+			.then((response) => {
+				if (response.ok) {
+					getContacts().then((response) => {
+						console.log(response)
+						dispatch({ type: 'LISTA_CONTACTOS', payload: response });
+					});
+				}
+			})
+			.catch((err) => {
+				console.log('Error eliminando contacto', err);
+
+			})
+	}
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
+		<div className="text-start mt-5">
+			<Link to="/add-contact">
+				<button className="btn btn-success position-absolute top-0 end-0">Agregar Contacto</button>
+			</Link>
+			{store.contactos.map((elemento) =>
+			(
+				<div className="card" key={elemento.id}>
+					<div className="row g-0">
+						<div className="col-md-3">
+							<img src="https://avatar.iran.liara.run/public" className="img-fluid rounded-start" width="250px" height="250px" alt="..." />
+						</div>
+						<div className="col-md-6">
+							<div className="card-body">
+								<h4> {elemento.name}</h4>
+								<p className="card-text">{elemento.address}</p>
+								<p className="card-text">{elemento.phone}</p>
+								<p className="card-text">{elemento.email}</p>
+							</div>
+						</div>
+						<div className="col-md-2 d-flex mt-5">
+							<Link to={`/edit-contact/${elemento.id}`}>
+								<i className="btn fa-solid fa-pen"></i>
+							</Link>
+
+							<i className="btn fa-solid fa-trash" onClick={(e) => {
+								e.preventDefault(),
+									deleteContact(elemento.id)
+							}}></i>
+						</div>
+					</div>
+				</div >
+			)
+
+			)
+			}
+
+
+			{/* <h3>{store.saludo == true ? "HOLA" : "HELLO"}</h3>
+			<button className="btn btn-success" onClick={handlerSaludo}>Saludo</button> */}
+
 		</div>
 	);
 }; 
