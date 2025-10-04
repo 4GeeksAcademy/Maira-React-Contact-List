@@ -3,6 +3,7 @@ export const initialStore = () => {
     message: null,
     saludo: true,
     contactos: [],
+    usuario: "",
   }
 }
 
@@ -29,6 +30,13 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         contactos: action.payload
+      }
+
+    case 'NUEVO-USUARIO':
+
+      return {
+        ...store,
+        usuario: action.payload
       }
 
     

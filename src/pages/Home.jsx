@@ -1,9 +1,8 @@
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link, useNavigate } from "react-router-dom";
-import AddContact from "./AddContact.jsx";
-import EditContact from "./EditContact.jsx";
 import { useState, useEffect } from "react";
+import { Navbar } from "../components/Navbar.jsx";
 
 export const Home = () => {
 
@@ -60,46 +59,40 @@ export const Home = () => {
 	}
 
 	return (
-		<div className="text-start mt-5">
-			<Link to="/add-contact">
-				<button className="btn btn-success position-absolute top-0 end-0">Agregar Contacto</button>
-			</Link>
-			{store.contactos.map((elemento) =>
-			(
-				<div className="card" key={elemento.id}>
-					<div className="row g-0">
-						<div className="col-md-3">
-							<img src="https://avatar.iran.liara.run/public" className="img-fluid rounded-start" width="250px" height="250px" alt="..." />
-						</div>
-						<div className="col-md-6">
-							<div className="card-body">
-								<h4> {elemento.name}</h4>
-								<p className="card-text">{elemento.address}</p>
-								<p className="card-text">{elemento.phone}</p>
-								<p className="card-text">{elemento.email}</p>
+		<>
+			<Navbar />
+			<div className="text-start mt-5">
+				{store.contactos.map((elemento) =>
+				(
+					<div className="card" key={elemento.id}>
+						<div className="row g-0">
+							<div className="col-md-3">
+								<img src="https://avatar.iran.liara.run/public" className="img-fluid rounded-start" width="250px" height="250px" alt="..." />
+							</div>
+							<div className="col-md-6">
+								<div className="card-body">
+									<h4> {elemento.name}</h4>
+									<p className="card-text">{elemento.address}</p>
+									<p className="card-text">{elemento.phone}</p>
+									<p className="card-text">{elemento.email}</p>
+								</div>
+							</div>
+							<div className="col-md-2 d-flex mt-5">
+								<Link to={`/edit-contact/${elemento.id}`}>
+									<i className="btn fa-solid fa-pen"></i>
+								</Link>
+
+								<i className="btn fa-solid fa-trash" onClick={(e) => {
+									e.preventDefault(),
+										deleteContact(elemento.id)
+								}}></i>
 							</div>
 						</div>
-						<div className="col-md-2 d-flex mt-5">
-							<Link to={`/edit-contact/${elemento.id}`}>
-								<i className="btn fa-solid fa-pen"></i>
-							</Link>
-
-							<i className="btn fa-solid fa-trash" onClick={(e) => {
-								e.preventDefault(),
-									deleteContact(elemento.id)
-							}}></i>
-						</div>
-					</div>
-				</div >
-			)
-
-			)
-			}
-
-
-			{/* <h3>{store.saludo == true ? "HOLA" : "HELLO"}</h3>
-			<button className="btn btn-success" onClick={handlerSaludo}>Saludo</button> */}
-
-		</div>
+					</div >
+				)
+				)
+				}
+			</div>
+		</>
 	);
 }; 

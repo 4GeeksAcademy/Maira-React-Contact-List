@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { isElementOfType } from "react-dom/test-utils";
-import { Home } from "./Home";
+
 
 
 const AddContact = () => {
@@ -77,23 +77,23 @@ const AddContact = () => {
             <div className="container mt-3 text-center">
                 <h2>Agregar Contacto</h2>
                 <div className="mb-3 text-start">
-                    <label htmlFor="Input1" className="form-label">Full Name</label>
+                    <label htmlFor="Input1" className="form-label">Nombre</label>
                     <input type="text" className="form-control" id="Input1" placeholder="Full Name" name="name" value={newContact.name} onChange={handleChange} />
 
                     <label htmlFor="Input2" className="form-label">Email</label>
                     <input type="email" className="form-control" id="Input2" placeholder="name@example.com" name="email" value={newContact.email} onChange={handleChange} />
 
-                    <label htmlFor="Input3" className="form-label">Phone</label>
+                    <label htmlFor="Input3" className="form-label">Teléfono</label>
                     <input type="number" className="form-control" id="Input3" placeholder="636363636" name="phone" value={newContact.phone} onChange={handleChange} />
 
-                    <label htmlFor="Input4" className="form-label">Address</label>
+                    <label htmlFor="Input4" className="form-label">Dirección</label>
                     <input type="text" className="form-control" id="Input4" placeholder="5555 Sargento Cabral" name="address" value={newContact.address} onChange={handleChange} />
 
                 </div>
                 <Link to="/">
-                    <button className="btn btn-primary">Go Back</button>
+                    <button className="btn btn-primary">Volver</button>
                 </Link>
-                <button className="btn btn-danger" onClick={(e) => {
+                <button className="btn btn-success" onClick={(e) => {
                     e.preventDefault();
                     addNewContact(store.contactos);
                     console.log("Creando Contacto...");
