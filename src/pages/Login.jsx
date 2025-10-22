@@ -1,6 +1,6 @@
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
  
 
@@ -12,8 +12,12 @@ const Login = () => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+		newAccess();
+	}, [])
+
     const newAccess = () => {
-        fetch('https://playground.4geeks.com/contact/agendas/Marcel', {
+        fetch(`https://playground.4geeks.com/contact/agendas/Marcel`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -34,8 +38,7 @@ const Login = () => {
             })
     }
     return (
-        <form onSubmit={newAccess}>
-            
+        <form onSubmit={newAccess} className="text-center">            
             <div className="mb-3">
                 <label htmlFor="acces" className="form-label">Usuario</label>
                 <input type="text" className="form-control" id="acces" />

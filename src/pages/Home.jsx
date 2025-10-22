@@ -1,14 +1,12 @@
 
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Navbar } from "../components/Navbar.jsx";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+
 
 export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
-
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		getContacts().then((response) => {
@@ -17,6 +15,7 @@ export const Home = () => {
 		});
 	}, [])
 
+	const user = store.usuario;
 
 	function getContacts() {
 		return fetch(`https://playground.4geeks.com/contact/agendas/Marcel/contacts`,
@@ -38,36 +37,45 @@ export const Home = () => {
 
 	function deleteContact(id) {
 
-		fetch(`https://playground.4geeks.com/contact/agendas/Marcel/contacts/${id}`, {
+		return fetch(`https://playground.4geeks.com/contact/agendas/Marcel/contacts/${id}`, {
 			method: "DELETE",
 			headers: {
-				'content-Type': 'application/json'
+				"Content-Type": "application/json"
 			}
 		})
 			.then((response) => {
 				if (response.ok) {
-					getContacts().then((response) => {
-						console.log(response)
-						dispatch({ type: 'LISTA_CONTACTOS', payload: response });
-					});
+					// 👇 devolvemos la promesa del GET
+					return getContacts();
+				} else {
+					throw new Error("Error al eliminar contacto");
 				}
 			})
-			.catch((err) => {
-				console.log('Error eliminando contacto', err);
+			.then((data) => {
+				console.log("Contactos actualizados:", data);
+				dispatch({ type: "LISTA_CONTACTOS", payload: data });
+				console.log("Soy el log de después del dispatch");
 
 			})
+			.catch((err) => {
+				console.log("Error eliminando contacto:", err);
+			});
 	}
 
 	return (
 		<>
-			<Navbar />
+
+			<div className="alert alert-warning alert-dismissible fade show" role="alert">
+				No olvides ingresar tu usuario!
+				<button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
 			<div className="text-start mt-5">
-				{store.contactos.map((elemento) =>
+				{store.contactos?.map((elemento) =>
 				(
 					<div className="card" key={elemento.id}>
 						<div className="row g-0">
 							<div className="col-md-3">
-								<img src="https://avatar.iran.liara.run/public" className="img-fluid rounded-start" width="250px" height="250px" alt="..." />
+								<img src="https://picsum.photos/200/300?grayscale" className="img-fluid rounded-start" width="250px" height="250px" alt="..." />
 							</div>
 							<div className="col-md-6">
 								<div className="card-body">
@@ -82,10 +90,32 @@ export const Home = () => {
 									<i className="btn fa-solid fa-pen"></i>
 								</Link>
 
-								<i className="btn fa-solid fa-trash" onClick={(e) => {
-									e.preventDefault(),
-										deleteContact(elemento.id)
-								}}></i>
+								<i className="btn fa-solid fa-trash" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+
+								</i>
+								<div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+									<div className="modal-dialog">
+										<div className="modal-content">
+											<div className="modal-header">
+												<h1 className="modal-title fs-5" id="staticBackdropLabel">Eliminar Contacto</h1>
+												<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div className="modal-body">
+												¿Estás segur@ de eliminar este contacto?
+											</div>
+											<div className="modal-footer">
+												<button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+												<button type="button" className="btn btn-primary" onClick={(e) => {
+													e.preventDefault()
+													deleteContact(elemento.id)
+														.then(() => {
+															window.location.reload()
+														})
+												}}>Confirmar</button>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div >

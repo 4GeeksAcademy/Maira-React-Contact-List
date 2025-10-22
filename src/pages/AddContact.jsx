@@ -91,14 +91,16 @@ const AddContact = () => {
 
                 </div>
                 <Link to="/">
-                    <button className="btn btn-primary">Volver</button>
+                    <button className="btn btn-primary">
+                        <i className="fa-solid fa-circle-left"></i>
+                    </button>
                 </Link>
                 <button className="btn btn-success" onClick={(e) => {
                     e.preventDefault();
                     addNewContact(store.contactos);
                     console.log("Creando Contacto...");
                     navigate("/");
-                }}>Guardar</button>
+                }}><i className="fa-solid fa-circle-check"></i></button>
             </div>
         </form>
     )
