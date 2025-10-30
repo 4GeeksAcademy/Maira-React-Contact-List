@@ -24,10 +24,13 @@ export const Home = () => {
 			}
 		)
 			.then((response) => {
+				if(response.ok == false) {
+					return newAccess()
+				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("este es el log de getContact", data);
+				console.log("este es el log de getContact", data)
 				return data.contacts
 			})
 			.catch((err) => {
@@ -60,15 +63,33 @@ export const Home = () => {
 			.catch((err) => {
 				console.log("Error eliminando contacto:", err);
 			});
+	
 	}
+
+	const newAccess = () => {
+        fetch(`https://playground.4geeks.com/contact/agendas/Marcel`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        }) 
+            .then((response) => {
+                console.log(response);
+                dispatch({ type: 'NUEVO-USUARIO', payload: response })
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+
+            })
+		}
 
 	return (
 		<>
-
-			<div className="alert alert-warning alert-dismissible fade show" role="alert">
-				No olvides ingresar tu usuario!
-				<button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>
 			<div className="text-start mt-5">
 				{store.contactos?.map((elemento) =>
 				(
